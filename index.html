@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>11WEB SPA</title>
+
+  <link rel="stylesheet" href="css/reset.css">
+  <link rel="stylesheet" href="css/components.css">
+  <link rel="stylesheet" href="css/pages.css">
+</head>
+
+<body>
+
+<div id="app-root">
+
+  <div id="overlay"></div>
+
+  <aside id="sideMenu"></aside>
+
+  <header id="topbar"></header>
+
+  <main id="app-view"></main>
+
+  <nav id="bottomNav"></nav>
+
+</div>
+
+<!-- ================= FIREBASE SDK (MUST FIRST) ================= -->
+<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
+
+<!-- ================= CONFIG ================= -->
+<script src="js/config/firebase.config.js"></script>
+
+<script src="js/config/app.config.js"></script>
+<script src="js/config/menu.config.js"></script>
+<script src="js/config/banner.data.js"></script>
+
+<!-- ================= CORE ================= -->
+<script src="js/core/state.js"></script>
+<script src="js/core/events.js"></script>
+<script src="js/core/utils.js"></script>
+<script src="js/core/router.js"></script>
+
+<!-- ================= SERVICES ================= -->
+<script src="js/services/firebase.service.js"></script>
+<script src="js/services/api.service.js"></script>
+<script src="js/services/storage.service.js"></script>
+<script src="js/services/auth.service.js"></script>
+<script src="js/services/profile.service.js"></script>
+<script src="js/services/banner.service.js"></script>
+
+<!-- ================= MODULES ================= -->
+<script src="js/modules/history.module.js"></script>
+<script src="js/modules/casino.module.js"></script>
+<script src="js/modules/news.module.js"></script>
+
+<!-- ================= LAYOUT ================= -->
+<script src="js/layout/shell.js"></script>
+<script src="js/layout/menu.js"></script>
+<script src="js/layout/topbar.js"></script>
+<script src="js/layout/navbar.js"></script>
+
+<!-- ================= UI ================= -->
+<script src="js/ui/category.js"></script>
+<script src="js/ui/banner.js"></script>
+<script src="js/ui/news.card.js"></script>
+
+<!-- ================= VIEWS ================= -->
+<script src="js/views/home.view.js"></script>
+<script src="js/views/privacy.view.js"></script>
+<script src="js/views/terms.view.js"></script>
+<script src="js/views/contact.view.js"></script>
+<script src="js/views/about.view.js"></script>
+<script src="js/views/news.view.js"></script>
+<script src="js/views/search.view.js"></script>
+<script src="js/views/favorites.view.js"></script>
+<script src="js/views/history.view.js"></script>
+<script src="js/views/profile.view.js"></script>
+
+<!-- ================= BOOT ================= -->
+<script>
+document.addEventListener("DOMContentLoaded", () => {
+
+  const boot = () => {
+
+    console.log("🚀 BOOT START");
+
+    try {
+
+      window.State?.init?.();
+      window.Events?.init?.();
+      window.Utils?.init?.();
+
+      window.Shell?.init?.();
+      window.Topbar?.init?.();
+      window.Navbar?.init?.();
+      window.Menu?.init?.();
+
+      if (window.Router?.init) {
+        window.Router.init();
+      }
+
+      if (window.Router?.navigate) {
+        window.Router.navigate("home", true);
+      }
+
+      console.log("✅ BOOT DONE");
+
+    } catch (e) {
+      console.error("❌ BOOT ERROR:", e);
+    }
+
+  };
+
+  requestAnimationFrame(boot);
+
+});
+</script>
+
+</body>
+</html>
