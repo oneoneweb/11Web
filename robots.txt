@@ -1,0 +1,15 @@
+User-agent: *
+Allow: /
+
+# Block internal SPA logic routes (optional safety)
+Disallow: /js/
+Disallow: /css/
+Disallow: /firebase.json
+
+# Allow important sections
+Allow: /#home
+Allow: /#news
+Allow: /#casino
+
+# Sitemap location
+Sitemap: https://oneoneweb.github.io/11Web/sitemap.xml
