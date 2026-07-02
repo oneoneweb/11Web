@@ -38,6 +38,12 @@ window.MenuConfig = [
     label: "📜 History",
     page: "history"
   },
+  {
+    type: "item",
+    label: "📥 Download Apk",
+    page: "download-apk",
+    url: "11web.apk"
+  },
 
   // ================= DIVIDER =================
   {
