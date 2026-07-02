@@ -1,6 +1,6 @@
 /* =====================================================
-   🎰 CASINO MODULE (FINAL v5.7 PRODUCTION FIXED)
-   FIX: GLOBAL DATA SYNC + FAVORITES COMPATIBILITY
+   🎰 CASINO MODULE (FINAL v5.8 GLOBAL POPULAR FIX)
+   FIX: GLOBAL POPULAR RANKING + FAVORITES COMPATIBILITY
 ===================================================== */
 
 const CasinoModule = (() => {
@@ -17,7 +17,6 @@ const CasinoModule = (() => {
   const FOR_YOU_SIZE = 10;
   const IMAGE_PATH = "assets/sites/";
 
-  const CLICK_KEY = "casino_clicks";
   const FAVORITE_KEY = "casino_favorites";
 
   /* =====================================================
@@ -30,10 +29,11 @@ const CasinoModule = (() => {
 
     rawData = await window.FirebaseService.getSites();
 
+    await loadGlobalClicks();
+
     // 🔥 CRITICAL FIX: GLOBAL SHARE FOR FAVORITES + SEARCH
     window.CASINO_DATA = rawData;
 
-    loadClicks();
     syncFavorites();
 
     forYouIndex = getTimeBasedIndex();
@@ -52,6 +52,44 @@ const CasinoModule = (() => {
       : [];
 
     rawData.sort((a, b) => (b.createdAt || 0) - (a.createdAt || 0));
+  }
+
+  /* =====================================================
+     GLOBAL CLICK TRACK
+  ===================================================== */
+  async function loadGlobalClicks() {
+    try {
+      if (!window.FirebaseService?.getGlobalClicks) return;
+
+      const globalClicks = await window.FirebaseService.getGlobalClicks();
+
+      rawData.forEach(item => {
+        item.clicks = Number(globalClicks[item.id] || item.clicks || 0);
+      });
+
+    } catch (error) {
+      console.error("❌ Global click load failed:", error);
+
+      rawData.forEach(item => {
+        item.clicks = Number(item.clicks || 0);
+      });
+    }
+  }
+
+  async function registerClick(id) {
+    const item = rawData.find(x => String(x.id) === String(id));
+    if (!item) return;
+
+    // instant UI update
+    item.clicks = Number(item.clicks || 0) + 1;
+
+    try {
+      if (window.FirebaseService?.incrementSiteClick) {
+        await window.FirebaseService.incrementSiteClick(id);
+      }
+    } catch (error) {
+      console.error("❌ Global click update failed:", error);
+    }
   }
 
   /* =====================================================
@@ -98,31 +136,6 @@ const CasinoModule = (() => {
   }
 
   /* =====================================================
-     CLICK TRACK
-  ===================================================== */
-  function loadClicks() {
-    const saved = JSON.parse(localStorage.getItem(CLICK_KEY) || "{}");
-
-    rawData.forEach(item => {
-      item.clicks = saved[item.id] || 0;
-    });
-  }
-
-  function saveClicks() {
-    const obj = {};
-    rawData.forEach(i => obj[i.id] = i.clicks || 0);
-    localStorage.setItem(CLICK_KEY, JSON.stringify(obj));
-  }
-
-  function registerClick(id) {
-    const item = rawData.find(x => x.id === id);
-    if (!item) return;
-
-    item.clicks = (item.clicks || 0) + 1;
-    saveClicks();
-  }
-
-  /* =====================================================
      IMAGE
   ===================================================== */
   const getImage = (src) => {
@@ -140,8 +153,8 @@ const CasinoModule = (() => {
 
     if (currentView === "popular") {
       return [...rawData]
-        .filter(x => (x.clicks || 0) > 0)
-        .sort((a, b) => b.clicks - a.clicks);
+        .filter(x => Number(x.clicks || 0) > 0)
+        .sort((a, b) => Number(b.clicks || 0) - Number(a.clicks || 0));
     }
 
     if (currentView === "foryou") {
@@ -241,10 +254,11 @@ const CasinoModule = (() => {
     });
 
     root.querySelectorAll(".play-btn").forEach(btn => {
-      btn.onclick = (e) => {
+      btn.onclick = async (e) => {
         e.stopPropagation();
 
         const id = btn.closest(".casino-card")?.dataset.id;
+
         registerClick(id);
 
         const item = rawData.find(x => String(x.id) === String(id));
@@ -280,8 +294,12 @@ const CasinoModule = (() => {
     }, 60000);
   }
 
-  function setView(view) {
+  async function setView(view) {
     currentView = view;
+
+    if (view === "popular") {
+      await loadGlobalClicks();
+    }
 
     if (view === "foryou") {
       forYouIndex = getTimeBasedIndex();
