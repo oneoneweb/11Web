@@ -26,6 +26,153 @@
   <link rel="stylesheet" href="css/reset.css">
   <link rel="stylesheet" href="css/components.css">
   <link rel="stylesheet" href="css/pages.css">
+
+  <!-- ================= APK POPUP CSS ================= -->
+  <style>
+    .apk-install-popup {
+      position: fixed;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      z-index: 99999;
+      padding: 0 10px 28px;
+      display: none;
+      pointer-events: none;
+    }
+
+    .apk-install-popup.show {
+      display: block;
+      pointer-events: auto;
+    }
+
+    .apk-popup-box {
+      position: relative;
+      width: 100%;
+      max-width: 680px;
+      margin: 0 auto;
+      border-radius: 18px 18px 0 0;
+      overflow: hidden;
+      background: rgba(255, 255, 255, 0.94);
+      box-shadow: 0 -8px 35px rgba(0, 0, 0, 0.35);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      animation: apkPopupUp 0.35s ease;
+    }
+
+    @keyframes apkPopupUp {
+      from {
+        transform: translateY(100%);
+        opacity: 0;
+      }
+
+      to {
+        transform: translateY(0);
+        opacity: 1;
+      }
+    }
+
+    .apk-popup-bg {
+      position: absolute;
+      inset: 0;
+      background: url("assets/icon/11web-192.png") center/cover no-repeat;
+      opacity: 0.16;
+      filter: blur(6px);
+      transform: scale(1.15);
+    }
+
+    .apk-popup-content {
+      position: relative;
+      z-index: 2;
+      padding: 12px 14px 18px;
+    }
+
+    .apk-popup-close {
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      width: 38px;
+      height: 38px;
+      border: none;
+      border-radius: 50%;
+      background: rgba(0, 0, 0, 0.35);
+      color: #ffffff;
+      font-size: 30px;
+      line-height: 38px;
+      text-align: center;
+      cursor: pointer;
+      z-index: 5;
+    }
+
+    .apk-popup-head {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding-right: 40px;
+    }
+
+    .apk-popup-icon {
+      width: 82px;
+      height: 82px;
+      border-radius: 18px;
+      object-fit: cover;
+      flex-shrink: 0;
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.25);
+    }
+
+    .apk-popup-title {
+      font-size: 28px;
+      font-weight: 900;
+      line-height: 1.35;
+      color: #000000;
+      text-shadow: 0 1px 2px rgba(255, 255, 255, 0.7);
+    }
+
+    .apk-popup-divider {
+      width: 100%;
+      height: 2px;
+      background: rgba(0, 0, 0, 0.15);
+      margin: 10px 0 12px;
+    }
+
+    .apk-download-btn {
+      width: 72%;
+      max-width: 430px;
+      margin: 0 auto;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      text-decoration: none;
+      background: #168bff;
+      color: #ffffff;
+      font-size: 28px;
+      font-weight: 800;
+      border-radius: 14px;
+      padding: 17px 18px;
+      box-shadow: 0 8px 22px rgba(22, 139, 255, 0.45);
+    }
+
+    .apk-download-btn span {
+      font-size: 30px;
+    }
+
+    @media (max-width: 480px) {
+      .apk-popup-title {
+        font-size: 25px;
+      }
+
+      .apk-popup-icon {
+        width: 76px;
+        height: 76px;
+      }
+
+      .apk-download-btn {
+        width: 74%;
+        font-size: 24px;
+        padding: 15px 16px;
+      }
+    }
+  </style>
 </head>
 
 <body class="app-booting">
@@ -62,6 +209,45 @@
     <main id="app-view"></main>
 
     <nav id="bottomNav"></nav>
+
+    <!-- ================= APK INSTALL POPUP ================= -->
+    <div id="apkInstallPopup" class="apk-install-popup">
+      <div class="apk-popup-box">
+
+        <div class="apk-popup-bg"></div>
+
+        <button id="apkPopupClose" class="apk-popup-close" type="button" aria-label="Close">
+          ×
+        </button>
+
+        <div class="apk-popup-content">
+
+          <div class="apk-popup-head">
+            <img
+              src="assets/icon/11web-192.png"
+              alt="11Web App"
+              class="apk-popup-icon"
+            >
+
+            <div class="apk-popup-title">
+              11Web এপ্স ডাউনলোড করে ইনস্টল করুন
+            </div>
+          </div>
+
+          <div class="apk-popup-divider"></div>
+
+          <a
+            href="11web.apk"
+            download="11web.apk"
+            class="apk-download-btn"
+          >
+            <span>🤖</span>
+            APP
+          </a>
+
+        </div>
+      </div>
+    </div>
 
   </div>
 
@@ -127,6 +313,26 @@
 
       let appShown = false;
 
+      function showApkPopup() {
+        const popup = document.getElementById("apkInstallPopup");
+        if (!popup) return;
+
+        setTimeout(() => {
+          popup.classList.add("show");
+        }, 700);
+      }
+
+      function setupApkPopup() {
+        const popup = document.getElementById("apkInstallPopup");
+        const closeBtn = document.getElementById("apkPopupClose");
+
+        if (!popup || !closeBtn) return;
+
+        closeBtn.addEventListener("click", () => {
+          popup.classList.remove("show");
+        });
+      }
+
       function showApp() {
         if (appShown) return;
         appShown = true;
@@ -143,6 +349,9 @@
         }
 
         document.body.classList.remove("app-booting");
+
+        setupApkPopup();
+        showApkPopup();
       }
 
       function waitForFirstRenderReady() {
