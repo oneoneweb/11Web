@@ -1,6 +1,6 @@
 /* =====================================================
-   🎰 CASINO MODULE (FINAL v5.8 GLOBAL POPULAR FIX)
-   FIX: GLOBAL POPULAR RANKING + FAVORITES COMPATIBILITY
+   🎰 CASINO MODULE (FINAL v5.9 PRODUCTION FIX)
+   FIX: WEB + APK GLOBAL CLICK SYNC (100% SAFE)
 ===================================================== */
 
 const CasinoModule = (() => {
@@ -16,7 +16,6 @@ const CasinoModule = (() => {
 
   const FOR_YOU_SIZE = 10;
   const IMAGE_PATH = "assets/sites/";
-
   const FAVORITE_KEY = "casino_favorites";
 
   /* =====================================================
@@ -31,7 +30,6 @@ const CasinoModule = (() => {
 
     await loadGlobalClicks();
 
-    // 🔥 CRITICAL FIX: GLOBAL SHARE FOR FAVORITES + SEARCH
     window.CASINO_DATA = rawData;
 
     syncFavorites();
@@ -43,19 +41,7 @@ const CasinoModule = (() => {
   }
 
   /* =====================================================
-     LOAD DATA SAFE (fallback support)
-  ===================================================== */
-  function loadData() {
-
-    rawData = Array.isArray(window.CASINO_DATA)
-      ? [...window.CASINO_DATA]
-      : [];
-
-    rawData.sort((a, b) => (b.createdAt || 0) - (a.createdAt || 0));
-  }
-
-  /* =====================================================
-     GLOBAL CLICK TRACK
+     GLOBAL CLICK LOAD
   ===================================================== */
   async function loadGlobalClicks() {
     try {
@@ -67,38 +53,66 @@ const CasinoModule = (() => {
         item.clicks = Number(globalClicks[item.id] || item.clicks || 0);
       });
 
-    } catch (error) {
-      console.error("❌ Global click load failed:", error);
-
-      rawData.forEach(item => {
-        item.clicks = Number(item.clicks || 0);
-      });
-    }
-  }
-
-  async function registerClick(id) {
-    const item = rawData.find(x => String(x.id) === String(id));
-    if (!item) return;
-
-    // instant UI update
-    item.clicks = Number(item.clicks || 0) + 1;
-
-    try {
-      if (window.FirebaseService?.incrementSiteClick) {
-        await window.FirebaseService.incrementSiteClick(id);
-      }
-    } catch (error) {
-      console.error("❌ Global click update failed:", error);
+    } catch (e) {
+      rawData.forEach(item => item.clicks = Number(item.clicks || 0));
     }
   }
 
   /* =====================================================
-     FAVORITES SYNC
+     CLICK HANDLER (🔥 WEBVIEW SAFE GLOBAL LISTENER)
+  ===================================================== */
+  function bindGlobalClick() {
+
+    if (!root) return;
+
+    root.addEventListener("click", async (e) => {
+
+      const btn = e.target.closest(".play-btn");
+      if (!btn) return;
+
+      e.preventDefault();
+      e.stopPropagation();
+
+      const card = btn.closest(".casino-card");
+      const id = card?.dataset?.id;
+
+      const item = rawData.find(x => String(x.id) === String(id));
+
+      if (!item) return;
+
+      // UI instant update
+      item.clicks = Number(item.clicks || 0) + 1;
+
+      try {
+        if (window.FirebaseService?.incrementSiteClick) {
+          await window.FirebaseService.incrementSiteClick(id);
+        }
+      } catch (err) {
+        console.error("Firebase click failed:", err);
+      }
+
+      // open link AFTER tracking
+      window.open(btn.href, "_blank");
+
+      // history save
+      if (item && window.HistoryModule?.addEntry) {
+        window.HistoryModule.addEntry({
+          id: item.id,
+          name: item.name,
+          link: item.link
+        });
+      }
+
+    });
+  }
+
+  /* =====================================================
+     FAVORITES
   ===================================================== */
   function syncFavorites() {
     try {
       const saved = JSON.parse(localStorage.getItem(FAVORITE_KEY) || "[]");
-      favorites = new Set(Array.isArray(saved) ? saved : []);
+      favorites = new Set(saved);
     } catch {
       favorites = new Set();
     }
@@ -108,21 +122,14 @@ const CasinoModule = (() => {
     localStorage.setItem(FAVORITE_KEY, JSON.stringify([...favorites]));
   }
 
-  function isFavorite(id) {
-    return favorites.has(id);
-  }
-
   function toggleFavorite(id) {
 
     if (!id) return;
 
     syncFavorites();
 
-    if (favorites.has(id)) {
-      favorites.delete(id);
-    } else {
-      favorites.add(id);
-    }
+    if (favorites.has(id)) favorites.delete(id);
+    else favorites.add(id);
 
     saveFavorites();
 
@@ -131,18 +138,9 @@ const CasinoModule = (() => {
     render();
   }
 
-  function getFavorites() {
-    return [...favorites];
+  function isFavorite(id) {
+    return favorites.has(id);
   }
-
-  /* =====================================================
-     IMAGE
-  ===================================================== */
-  const getImage = (src) => {
-    if (!src) return "";
-    if (src.startsWith("http")) return src;
-    return IMAGE_PATH + src;
-  };
 
   /* =====================================================
      VIEW LOGIC
@@ -158,24 +156,13 @@ const CasinoModule = (() => {
     }
 
     if (currentView === "foryou") {
-      return getForYouData();
+      const total = rawData.length;
+      return Array.from({ length: FOR_YOU_SIZE }, (_, i) =>
+        rawData[(forYouIndex + i) % total]
+      );
     }
 
     return rawData;
-  }
-
-  function getForYouData() {
-
-    const total = rawData.length;
-    if (!total) return [];
-
-    const result = [];
-
-    for (let i = 0; i < FOR_YOU_SIZE; i++) {
-      result.push(rawData[(forYouIndex + i) % total]);
-    }
-
-    return result;
   }
 
   function getTimeBasedIndex() {
@@ -199,7 +186,7 @@ const CasinoModule = (() => {
 
             <div class="card-front">
 
-              <img class="casino-img" src="${getImage(item.image)}"/>
+              <img class="casino-img" src="${IMAGE_PATH + item.image}"/>
 
               <div class="site-name">${item.name || ""}</div>
 
@@ -218,7 +205,7 @@ const CasinoModule = (() => {
 
             <div class="card-back">
               <img class="back-img"
-                   src="${getImage(item.backImage || '11webback.webp')}"/>
+                   src="${IMAGE_PATH + (item.backImage || '11webback.webp')}"/>
             </div>
 
           </div>
@@ -227,16 +214,15 @@ const CasinoModule = (() => {
       </div>
     `;
 
-    bindEvents();
+    bindGlobalClick();
+    bindFavorite();
+    bindFlip();
   }
 
   /* =====================================================
-     EVENTS
+     SUPPORT EVENTS
   ===================================================== */
-  function bindEvents() {
-
-    if (!root) return;
-
+  function bindFlip() {
     root.querySelectorAll(".casino-card").forEach(card => {
       card.onclick = (e) => {
         if (e.target.closest(".fav-btn")) return;
@@ -244,32 +230,14 @@ const CasinoModule = (() => {
         card.classList.toggle("flipped");
       };
     });
+  }
 
+  function bindFavorite() {
     root.querySelectorAll(".fav-btn").forEach(btn => {
       btn.onclick = (e) => {
         e.preventDefault();
         e.stopPropagation();
         toggleFavorite(btn.dataset.id);
-      };
-    });
-
-    root.querySelectorAll(".play-btn").forEach(btn => {
-      btn.onclick = async (e) => {
-        e.stopPropagation();
-
-        const id = btn.closest(".casino-card")?.dataset.id;
-
-        registerClick(id);
-
-        const item = rawData.find(x => String(x.id) === String(id));
-
-        if (item && window.HistoryModule?.addEntry) {
-          window.HistoryModule.addEntry({
-            id: item.id,
-            name: item.name,
-            link: item.link
-          });
-        }
       };
     });
   }
@@ -282,7 +250,6 @@ const CasinoModule = (() => {
     if (forYouTimer) clearInterval(forYouTimer);
 
     forYouTimer = setInterval(() => {
-
       if (currentView !== "foryou") return;
 
       const total = rawData.length;
@@ -312,9 +279,7 @@ const CasinoModule = (() => {
     init,
     setView,
     toggleFavorite,
-    registerClick,
-    isFavorite,
-    getFavorites
+    isFavorite
   };
 
 })();
