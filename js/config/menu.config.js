@@ -1,6 +1,6 @@
 window.MenuConfig = [
 
-  // ================= MAIN NAV =================
+ // ================= MAIN NAV =================
   {
     type: "item",
     label: "🏠 Home",
