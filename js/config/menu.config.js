@@ -67,7 +67,7 @@ window.MenuConfig = [
     type: "item",
     label: "🌐 Website",
     page: "website",
-    url: "https://your-website.com"
+    url: "https://oneoneweb.github.io/11Web/"
   },
   {
     type: "item",
