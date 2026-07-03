@@ -34,6 +34,7 @@ This project is designed as a **PWA-ready web platform** and can be converted in
 # 📁 Project Structure
 11web/
 │
+├── 11web.apk
 ├── index.html
 ├── manifest.json
 ├── firebase.json
@@ -130,3 +131,4 @@ git clone https://oneoneweb.github.io/11Web/
 cd 11web
 
 # Run using Live Server (recommended)
+# Deploy retry
