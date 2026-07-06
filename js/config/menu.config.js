@@ -21,11 +21,6 @@ window.MenuConfig = [
     label: "❤️ Favorites",
     page: "favorites"
   },
-  {
-    type: "item",
-    label: "👤 Profile",
-    page: "profile"
-  },
 
   // ================= DIVIDER =================
   {
