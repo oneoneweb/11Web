@@ -16,10 +16,8 @@ const Navbar = (() => {
 
     root.innerHTML = `
       <div class="nav ${active === "home" ? "active" : ""}" data-page="home">🏠</div>
-      <div class="nav ${active === "search" ? "active" : ""}" data-page="search">🔍</div>
       <div class="nav ${active === "news" ? "active" : ""}" data-page="news">📰</div>
       <div class="nav ${active === "favorites" ? "active" : ""}" data-page="favorites">❤️</div>
-      <div class="nav ${active === "profile" ? "active" : ""}" data-page="profile">👤</div>
     `;
   }
 
