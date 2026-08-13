@@ -1,134 +1,55 @@
-her# 🌐 11Web - Smart Web Access
+11Web — Legacy Website
 
-A modern **Single Page Application (SPA)** built with vanilla JavaScript, Firebase, and modular architecture.  
-This project is designed as a **PWA-ready web platform** and can be converted into an Android APK using WebView/PWA tools.
+This repository contains the legacy 11Web / 11Play website.
 
----
+The project has moved to the current official 11Play website:
 
-# 🚀 Live Features
+https://11play.github.io/11play/
 
-- 🔥 Firebase Authentication (Login/Register)
-- 📰 Dynamic News System
-- 🎰 Casino / Content Modules
-- ⭐ Favorites System
-- 📜 History Tracking
-- 👤 User Profile System
-- 🔍 Search System
-- ⚡ SPA Router (No page reload)
-- 📱 Mobile-first responsive UI
-- 🧠 Modular JS architecture
+Official 11Play Website
 
----
+Visit the current official website:
 
-# 🧱 Tech Stack
+https://11play.github.io/11play/
 
-- HTML5
-- CSS3
-- Vanilla JavaScript (ES6 Modules)
-- Firebase (Auth + Firestore)
-- PWA (Manifest + SEO ready)
-- GitHub Pages compatible
+Website Migration
 
----
+The previous website was hosted at:
 
-# 📁 Project Structure
-11web/
-│
-├── 11web.apk
-├── index.html
-├── manifest.json
-├── firebase.json
-├── robots.txt
-├── sitemap.xml
-│
-├── assets/
-│   └── icon/
-│       ├── 11web-192.png
-│       └── 11web-512.png
-│
-├── css/
-│   ├── components.css
-│   ├── pages.css
-│   └── history.css
-│
-├── js/
-│
-│   ├── app.js
-│
-│   ├── core/
-│   │   ├── router.js
-│   │   ├── state.js
-│   │   ├── utils.js
-│   │   └── events.js
-│
-│   ├── config/
-│   │   ├── app.config.js
-│   │   ├── firebase.config.js
-│   │   ├── menu.config.js
-│   │   └── banner.data.js
-│
-│   ├── layout/
-│   │   ├── shell.js
-│   │   ├── topbar.js
-│   │   ├── navbar.js
-│   │   └── menu.js
-│
-│   ├── views/
-│   │   ├── home.view.js
-│   │   ├── news.view.js
-│   │   ├── search.view.js
-│   │   ├── profile.view.js
-│   │   ├── favorites.view.js
-│   │   ├── history.view.js
-│   │   ├── privacy.view.js
-│   │   ├── terms.view.js
-│   │   ├── contact.view.js
-│   │   └── about.view.js
-│
-│   ├── ui/
-│   │   ├── banner.js
-│   │   ├── category.js
-│   │   ├── news.card.js
-│   │   ├── profile.card.js
-│   │   └── profile.stats.js
-│
-│   ├── services/
-│   │   ├── firebase.service.js
-│   │   ├── auth.service.js
-│   │   ├── api.service.js
-│   │   ├── banner.service.js
-│   │   ├── news.service.js
-│   │   ├── favorites.service.js
-│   │   ├── user.service.js
-│   │   ├── stats.service.js
-│   │   └── profile.service.js
-│
-│   ├── modules/
-│   │   ├── news.module.js
-│   │   ├── casino.module.js
-│   │   ├── history.module.js
-│   │   └── profile.module.js
-│
-│   ├── repositories/
-│   │   └── banner.repository.js
-│
-│   └── data/
-│       ├── profile.data.js
-│       └── user.stats.data.js
-│
-└── js/legal/
-    └── privacy.policy.js
+"https://oneoneweb.github.io/11Web/"
+
+This legacy URL is retained for website migration and to redirect visitors and search engines to the current official 11Play website.
+
+Current Official URL
+
+"https://11play.github.io/11play/"
+
+Previous URL
+
+"https://oneoneweb.github.io/11Web/"
+
+Repository Status
+
+This repository is no longer used as the active 11Play website.
+
+It is maintained only for:
+
+- Legacy URL migration
+- Redirecting visitors to the official 11Play website
+- Search engine URL consolidation
+- Preserving historical website references
+- Google Search Console verification when required
+
+Brand
+
+The current official brand name is:
+
+11Play
+
+Official website:
+
+https://11play.github.io/11play/
 
 ---
 
-# ⚙️ Installation (Local Setup)
-
-```bash
-# Clone repository
-git clone https://oneoneweb.github.io/11Web/
-
-# Open project folder
-cd 11web
-
-# Run using Live Server (recommended)
-# Deploy retry
+© 11Play. All rights reserved.
